@@ -1,0 +1,12 @@
+public function destroy($id)
+{
+  $img=DB::table('student')->where('id',$id)->first();
+  $image_path=$img->photo;
+  
+  unlink($image_path); 
+  DB::table('student')->where('id',$id)->delete();
+  
+return response('deleted');
+
+}
+
