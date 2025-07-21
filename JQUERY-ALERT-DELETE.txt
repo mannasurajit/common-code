@@ -1,0 +1,15 @@
+<a href="" class="confirmdelete" name="delete post" title="pens"> Delete items   </a> 
+
+
+
+$(document).on("click",".confirmdelete",function(){
+  
+ var name=$(this).attr('name');
+ if(confirm('are you sure youwant to delete this' +name+'?')){
+     return true
+   }
+  return flase ;
+
+ 
+
+});

@@ -1,0 +1,26 @@
+WRITE code in controller 
+
+$data=$request->all();
+
+if(isset($data["remember"]) && !empty($data["remember"]))
+{
+  setcookie("email",$data["email"],time()+3600)   /// for 1  hour
+  setcookie("password",$data["password"],time()+3600)
+}
+else
+{
+ setcookie("email","");
+ setcookie("password","");
+
+}
+
+////   write code in blade file///
+
+<input type="email" name="email" @if(isset($_COOKIE["email"])) value="{{ $_COOKIE["email"] }}"  @endif   >    
+
+<input type="password" name="password" @if(isset($_COOKIE["password"])) value="{{ $_COOKIE["password"] }}"  @endif   >
+
+<input type="checkbox" name="rememberme"  @if(isset($_cookie["email"])) checked="" @endif  >
+
+
+

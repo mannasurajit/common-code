@@ -1,0 +1,134 @@
+https://www.youtube.com/watch?v=p0I25hL3pBI
+
+
+1. composer require laravel/socialite
+
+2.  OPTION  laravel breeze=> blade with apiline => no => pest => no 
+
+3. create databse and migrate 
+
+4. views=>auth=>login.blade.php  put  a  hyper  link  as  google  login
+
+5.  go to google developer consle and create a project 
+
+6. menu=> api & service=>credentals
+
+7.  create credental => authalint id
+
+8. external  
+
+.....
+
+9. put those information in .env  file 
+   
+    GOOGLE_CLIENT_ID=
+    GOOGLE_CLIENT_SECRET= 
+    GOOGLE_CALLBACK_REDIRECTS=
+
+
+9.  config =>  service.php  put those info in an array  
+
+    'google' =>  [
+
+             'google_client_id'=> env('GOOGLE_CLIENT_ID'),
+             'google_secret'=> env('GOOGLE_CLIENT_SECRET'),
+             'redirect'=> env('GOOGLE_CALLBACK_REDIRECTS'),
+
+                ]
+10.  put  login  url  in  views => auth  =>  login.blade.php
+
+     < a href="{{ route('auth.google') }}" > </a>  
+    '
+11 . create route  
+ 
+    Route::get('auth/google',[LoginController::class,'googlelogin'])->name('auth.google'); 
+
+12.  make  a  controller  and  create google  login url  
+  
+ use Laravel\Socialite\Facades\Socialite;
+ 
+ Class LoginController extends Controller
+ {
+   ///  this function will redirect to google
+  public function googlelogin()
+  {
+    return Socialite::driver('google')->redirect();
+  }
+
+  /**
+  * function:googlelogin
+  * description: get authenticated user details 
+  * @param NA 
+  * @return void 
+  */
+  public function googleAuthentation()
+  {
+   $googleuser=Socialite::driver('google')->user();
+   //dd($googleuser);
+   $user=User::where('google_id',$googleuser->id)->first();
+   if($user)
+   {
+     Auth::login($user);
+     return redirect()->route('dashboard');
+    }
+    else
+    {
+      $userdata=User::create([
+            'name'=>$googleuser->name,
+            'email'=>$googleuser->email,
+            'password'=>Hash::make('123456789'),
+            'google_id'=>$googleuser->id
+
+               ]);
+
+         if($userdata)
+         {
+           Auth::login($userdata);
+           return redirect()->route('dashboard');
+         }
+
+    }
+    
+
+  }
+
+ }
+
+13. modify controller  and  make as route controller  
+
+   Route::controller(LoginController::class)->group(function(){
+
+   /*  Route::get('auth/google',[LoginController::class,'googlelogin'])->name('auth.google'); */
+
+     Route::get('auth/google','googlelogin')->name('auth.google'); 
+     Route::get('auth/google-callback','googleAuthentation')->name('auth.google-callback') ;
+
+
+   })
+
+14. add a column to user table and  again migrate
+
+    $table->string('google_id')->nullable();
+
+15. add a protected fillable field in user model .
+
+
+16. put  all  login authentation function 
+
+  try{
+
+  }catch(Exception $e)
+ {
+   dd($e);
+ }
+
+
+
+
+  
+    
+
+
+
+
+
