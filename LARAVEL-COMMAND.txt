@@ -1,0 +1,5 @@
+
+composer create-project "laravel/laravel:^10.0" example-app
+
+composer  update  => will run composer again
+php artisan vendor:publish
