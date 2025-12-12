@@ -1,0 +1,48 @@
+https://200oksolutions.com/blog/record-upload-audio-laravel-guide/
+
+https://www.google.com/search?sca_esv=cca2da7e58596d6a&rlz=1C1MRUS_enIN1152IN1152&sxsrf=AE3TifMvTx0LdlSlzA323DNZ52AX4YV8jA:1764370317800&q=How+to+get+audio+file+duration+in+laravel+using+php&sa=X&ved=2ahUKEwiDx63Q95WRAxWdzTgGHReLGqYQ1QJ6BAhKEAE&biw=1366&bih=641&dpr=1
+
+
+https://stackoverflow.com/questions/44577380/how-to-upload-files-in-laravel-directly-into-public-folder
+
+
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use wapmorgan\Mp3Info\Mp3Info;
+use Illuminate\Support\Facades\Storage;
+
+class Audiocontroller extends Controller
+{
+    
+  public function getaudioinfo(Request $request)
+  {
+    if($request->isMethod('post')) 
+    {
+       $uploadfile=$request->file('audio');
+      //$uploadfile="public/upload/file_example_MP3_1MG.mp3";
+        if($uploadfile)
+        {
+          $filename=rand(300,5000).'.'.$uploadfile->extension();
+          //$path=public_path('upload/'.$filename);          
+          // $uploadfile->store('public/upload',$filename) ;
+          $path="upload/".$filename; 
+          //Storage::disk('public')->put($path, $uploadfile);
+         $filenamenew = $uploadfile->storeAs('/upload/', $filename,['disk' => 'public_uploads']);
+
+          $mp3filepath="public/upload/".$filename ;     
+        }
+
+      $validate=$request->validate(['audio'=>'required|mimes:mp3']);
+      $audio = new Mp3Info($mp3filepath, true); 
+      $durationInSeconds = $audio->duration;
+      $formattedDuration = floor($durationInSeconds / 60) . ":" . ($durationInSeconds % 60);  
+      return "Duration: " . $durationInSeconds . " seconds\n"; 
+
+    }    
+
+    return view('uploadaudio');
+
+  }
