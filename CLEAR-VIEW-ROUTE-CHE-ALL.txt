@@ -1,0 +1,9 @@
+https://laracasts.com/discuss/channels/laravel/problem-with-env-and-routes-cache
+
+php artisan cache:clear
+
+php artisan view:clear
+
+php artisan config:clear
+
+php artisan route:clear

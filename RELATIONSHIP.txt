@@ -1,0 +1,10 @@
+ONE TO  ONE 
+
+$data=DB::table('customer')->join('customer_details','customer.id' '=' 'customer_details.customer_id')->first() or get() ;
+
+https://laracasts.com/discuss/channels/laravel/where-clause-in-eloquent-join
+
+https://laravel.com/docs/5.4/queries#joins
+
+
+ 

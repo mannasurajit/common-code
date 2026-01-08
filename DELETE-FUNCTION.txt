@@ -1,0 +1,13 @@
+public function deletebanner($id)
+{
+  $bannerimage=Banner::where('id',$id)->first();
+  $banner_image_path='front/images/banners/';
+
+   if(file_exists($banner_image_path.$bannerimage->image)
+   {
+    unlink($banner_image_path.$bannerimage->image);
+   }
+
+   Banner::where('id',$id)->delete();
+
+}

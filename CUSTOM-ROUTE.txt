@@ -1,0 +1,19 @@
+1. create a file admin.php under route folder 
+
+2.copy web.php  and paste in admin.php file
+
+3. app=>providers=>routeserviceprovider 
+
+   $this->routes(function () {
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('routes/api.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/admin.php'));
+
+
+        });

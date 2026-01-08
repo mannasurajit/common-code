@@ -1,0 +1,10 @@
+@extends('layout.app');
+@section('conrtent');
+<link rel="stylesheet" type="text/css" href="style/product-style.css" >
+<link rel="stylesheet" type="text/css" href="style/product-responsive.css" >
+@include('layout.front.nav');
+
+<script src="js/custom-product-js" >
+
+@endsection
+

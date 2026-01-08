@@ -1,0 +1,31 @@
+public function addslider(Request $request)
+{
+  if($request->isMethod('post'))
+  {
+    $image_file=$request->file('image');
+    if($image_file->isValid())
+    {
+      $filename=rand(300,5000).'.'.$image_file->extension();
+      $path=public_path('upload/'.$filename);
+      $request->image->move(public_path('upload'),$filename) ;      
+    }
+    else
+    {
+      $filename="";
+    } 
+    
+    $data=[
+        'text1'=>$request->text1,
+        'text2'=>$request->text2,
+        'text3'=>$request->text3,
+        'image'=>$filename 
+      ];
+  $slider=Slider::insert($data); 
+
+  return redirect('admin/showslider')->with('success','Slider add success');
+
+  }   
+      
+  return view('admin/addslider');
+
+}

@@ -1,0 +1,122 @@
+
+$table->string('name');
+$table->string('email')->unique();
+$table->string('name');
+
+
+$table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+
+schema::create{customer_details
+ $table->id();
+ $table->unsignedBigInteger('customer_id');
+ $table->string('address')->nullable();
+ $table->date('dob')->format('Y-m-d')->nullable();
+ ///foreign key constraint
+ $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+ $table->timestamps();
+
+
+schema::create(customer...
+{
+  $table->id();
+  $table->string('name');
+  $table->string('email')->unique();
+  $table->string('phone');
+  $table->boolean('is_admin')->nullable();
+}
+ 
+///foreign key constraint
+$table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+
+///  one to one  relationship  
+
+$data=DB::table('customers')->join('customer_details','customer.id','=','customer_details.customer_id')->get()
+
+write code in customer model file 
+
+public function customer_details()  : HasOne
+{
+  return  $this->hasOne(CustomerDetails::class,'customer_id','id'); // foregin key, local key
+
+}
+
+by using illuquent orm  
+
+$data=Customer::with('customer_details')->get();
+return $data;
+
+to  return few  data  
+$data=Customer::with('customer_details:customer_id,dob,address')->get();
+
+write code in customerdetails model  
+
+public function customer():Belongsto
+{
+  return $this->belongsTo(customer::class,'customer_id','id')
+}
+
+ write code in controller file
+
+  $dat=Customerdetails::with('customer')->get();
+
+//// one to many  ////
+
+by  query builder  
+
+$data=DB::table('posts')
+    ->join('customers','post.customer_id', '=', 'customer.id')
+    ->select('post.*','customer.name as name ')
+    ->get();
+
+// by using orm 
+write code in post model
+public function customer()
+{
+  return $this->belongsTo(customer::clas,'customer_id','id') 
+}
+
+write in customer model
+
+fublic function post()
+{
+  return $this->Hasmany(post::class,'customer_id,'id')
+}
+
+/// write code in controller
+
+$data=post::with('customer')->get()
+return $data;
+
+write code in controller  
+public function allpost($id)
+{
+  $post=post::with('customer:id,name')->gt();
+  return $post;
+ 
+by using query builder 
+
+$data=DB::table('post')
+      ->join('customers','post.customer_id','customer.id')
+      ->select('post.*','customer.name as name')
+      ->get();
+  return $data;
+
+}
+
+schema::create(childcategory ...
+{
+  $table->id();
+  $table->unsignedBigInteger('category_id');
+  $table->unsignedBigInteger('subcategory_id');
+  $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+  $table->foreign('subcategory_id')->references('id')->on('subcategories')->onDelete('cascade');
+}
+
+$data=DB::table('childcategory')->leftJoin('categories','childcategory.category_id','category.id')
+    ->leftJoin('subcategory','childcategory.subcategory_id','subcategory.id')
+   ->select('category.category_name','subcategory.subcategory_name','childcategory.*')->get();
+
+
+
+
+

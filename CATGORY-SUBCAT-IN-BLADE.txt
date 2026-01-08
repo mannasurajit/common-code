@@ -1,0 +1,15 @@
+
+write code in blade file  
+
+<select name="category" >
+@foreach($category as $row)
+@php
+$subcat=DB::table('subcategory')->where('category_id',$row->id)->get();
+@endphp
+ <option value="{{ $row->id }}">{{ $row->category_name }}</option>
+ @foreach($subcat as $row) 
+ <option value="{{ $row->id }}">-----{{ $row->subcategory_name  }}   </option>
+
+ @endforeach
+@endforeach
+</select>

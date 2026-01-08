@@ -1,0 +1,9 @@
+use Hash
+
+$newpassword = Hash::make($request->new_password);
+
+if(Hash::check($oldpassword,$newpassword))
+{
+
+}
+

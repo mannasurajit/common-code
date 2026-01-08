@@ -1,0 +1,13 @@
+bootstrap auth ui  
+
+Auth::user()->password 
+
+///get login user id 
+
+Auth::id();
+
+/// find login user
+
+$user=Auth::find(Auth::id());
+$user->password=$request->password;
+$user->save();

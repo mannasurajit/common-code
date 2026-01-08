@@ -1,0 +1,7 @@
+https://www.youtube.com/watch?v=SpHBWqu8OQM
+
+https://www.youtube.com/watch?v=aqLMNzdo5CI
+
+1. composer create-project laravel/laravel myapp
+2. composer require laravel/breeze --dev 
+3. php artisan breeze:install 

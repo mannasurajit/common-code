@@ -1,0 +1,53 @@
+namespace App\Http\Controllers\admin;
+use App\Http\Controllers\Frontent;
+use Illuminate\Support\Facades\Route;
+
+
+Route::get('/',[Frontent::class,'index']);
+Route::get('/aboutus',[Frontent::class,'aboutus']);
+Route::get('/contactus',[Frontent::class,'contactus']);
+Route::get('/wireandcable',[Frontent::class,'wireandcable']); 
+
+Route::get('/admin',[Admin::class,'login']);
+Route::post('/admin',[Admin::class,'login']);
+
+Route::prefix('/admin')->namespace('App\Http\Controllers\admin')->group(function(){
+
+Route::group(['middleware'=>['admin']],function(){
+Route::get('dashboard',[Admin::class,'dashboard'])->name('dashboard');
+Route::get('showslider',[Admin::class,'showslider'])->name('showslider');
+Route::match(['get','post'],'editslider/{id}',[Admin::class,'editslider'])->name('editslider');
+Route::get('showaboutus',[Admin::class,'showaboutus'])->name('showaboutus');
+Route::match(['get','post'],'editaboutus/{id}',[Admin::class,'editaboutus']);
+Route::get('whychooseus/',[Admin::class,'whychooseus']);
+Route::match(['get','post'],'editwhychooseus/{id}',[Admin::class,'editwhychooseus']);
+Route::get('contactinfo',[Admin::class,'contactinfo']);
+Route::match(['get','post'],'editcontactinfo/{id}',[Admin::class,'editcontactinfo']);
+Route::match(['get','post'],'addproduct',[Admin::class,'addproduct']);
+Route::get('showproduct',[Admin::class,'showproduct']);
+Route::match(['get','post'],'editproduct/{id}',[Admin::class,'editproduct']);
+Route::get('deleteproduct/{id}',[Admin::class,'deleteproduct']);
+
+
+}) ; 
+
+});
+
+
+////
+
+Route::get('admin/editcategory/{$id}',[Admincontroller::class,'editcategory'])->name(category.edit)
+
+<a href=" {{ route('category.edit', $catego->id )  }} " > edit category   </a>
+
+Route::group(['namespace'=>'App\Http\Controllers\Front'],function(){
+  Route::get('/','frontcontroller@index');
+
+});
+
+
+
+
+
+
+

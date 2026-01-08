@@ -1,0 +1,89 @@
+1. install  laraval 
+2. in user table migration file please add some field ,  do not forgot to add those field in model file also.
+3.run migratyion 
+4.in laravl 11 or 12 there are no api.php route folder ,  so  create api.php  file by using following command 
+
+  php artisan install:api 
+
+5. in  laraval  11 or 12  put  the following line in user model file.
+
+   use Laravel\Sanctum\HasApiTokens;
+
+   class User extends Authenticatable
+   {
+    use HasApiTokens, HasFactory, Notifiable;
+
+ 6.cre a controller  
+
+    php artisan make:controller Api/Authcontroller--api 
+
+7. route -> api.php 
+   Route::controller(Authcontroller::class)->group(function(){
+    Route::post('register','register')
+
+});
+
+8. make a helper class ,  for  laraval  11 or  12  
+
+  php artisan make:class Helper/Responcehelper
+
+9.  write  code  in  helper classs
+
+10. create  a  login function and try login
+
+if(!Auth::attempt(['email'=>$request->email,'password'=>$request->password]))
+            {
+              return Responcehelper::error(message:'unable to login due to invalid credental',statuscode:400);
+
+            }
+$user=Auth::user();
+   $token=$user->createToken('My Api token')->plainTextToken;
+
+11.  create userprofile function
+
+public function userprofile()
+{
+  $user=Auth::user();
+  if($user)
+  {
+   return response()->json([
+            'status'=>'success',
+            'message'=>'Profile data access successful  ',
+            'data'=>$user
+         ],200);
+  }
+  
+  return response()->json([
+                    'status'=>'Error',
+                    'message'=>'Unauthenticated'
+                  ],400);
+}
+
+12. logout function  
+
+ public function logout()
+{
+  $user=Auth::user();
+  if($user)
+  {
+   $user->currentAccessToken()->delete();
+   return response()->json([
+                        'status'=>'success',
+                        'message'=>'Logout success'
+                     ],200);
+  }
+  
+  return response()->json([
+                       'status'=>'Error',
+                       'message'=>'Can not logout'
+                     ],400);
+
+}
+
+
+
+
+
+
+
+

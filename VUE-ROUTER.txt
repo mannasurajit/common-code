@@ -1,0 +1,56 @@
+https://vueschool.io/articles/vuejs-tutorials/the-ultimate-guide-for-using-vue-js-with-laravel/
+
+1.  first install laravel 10.10 version atleast 
+
+2.  then install vue js  by using command  
+
+npm install vue @vitejs/plugin-vue
+
+
+3.  then install vue router by using command 
+
+npm install vue-router@4
+
+
+4.  vite.config.js file configure  by adding   put  import vue from "@vitejs/plugin-vue"; and add  vue(),
+
+ import { defineConfig } from "vite";
+import laravel from "laravel-vite-plugin";
+import vue from "@vitejs/plugin-vue";
+
+export default defineConfig({
+    plugins: [
+        vue(),
+        laravel({
+            input: ["resources/css/app.css", "resources/js/app.js"],
+            refresh: true,
+        }),
+    ],
+    resolve: {
+        alias: {
+            vue: "vue/dist/vue.esm-bundler.js",
+        },
+    },
+});
+
+//////  if problem exist please folow points /////  https://laracasts.com/discuss/channels/vue/error-installing-vuejs
+1.  install laraval  10.49  
+2. remove node module folder and remove package-lock.json
+3. run command  npm cache clean --force  
+4. check composer.json file is same version of package-lock.json
+5.run  command  one by one 
+ 
+  npm install
+  npm install vue@latest vue-loader@latest
+  npm install @vitejs/plugin-vue 
+
+ 
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,294 @@
+1. create a Admin table using migration 
+   php artisan make:migration create_Admin_table
+
+      $table->id();
+      $table->string('name');
+      $table->string('email')->unique();
+      $table->string('city')->nullable();
+ 
+ 2. run  migration
+
+    php artisan migrate
+
+3. make Admin model 
+  
+   php artisan make:model Admin
+
+4. change Auth.php file  
+
+     'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+    ],
+
+
+    'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class,
+        ],
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
+
+        // 'users' => [
+        //     'driver' => 'database',
+        //     'table' => 'users',
+        // ],
+    ],
+
+
+
+5. make a middleware Admin
+   php artisan make:middleware Admin
+
+6. change Karnel.php  and  add middleware name  at  the  button
+
+   protected $middlewareAliases = [
+        'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+        'signed' => \App\Http\Middleware\ValidateSignature::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'admin' => \App\Http\Middleware\Admin::class,
+    ];
+
+
+7. change middleware file 
+  use auth   
+
+8.  change middleware file as below  and add  use Auth;
+ 
+ 
+  <?php
+
+    namespace App\Http\Middleware;
+
+    use Closure;
+    use Illuminate\Http\Request;
+     use Symfony\Component\HttpFoundation\Response;
+   use Auth;
+
+
+    class Admin
+   {
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        
+        if(!Auth::guard('admin')->check())
+        {
+           return redirect('/login');
+
+        }
+        
+        return $next($request);
+    }
+    }
+
+
+9.  web.php  change  as  
+
+    <?php
+//namespace App\Http\Controllers\admin\Admincontroller;
+
+
+use App\Http\Controllers\admin\Admincontroller;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\frontent\home;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
+//Route::get('/', function () {
+    //return view('welcome');
+   // return view('welcome2');
+//});
+
+Route::get('/',[home::class,'index']);
+Route::get('/roomdetails/{id}',[home::class,'details']);
+Route::get('/quote',[home::class,'quote']);
+
+
+
+Route::get('/admin',[Admincontroller::class,'login'])->name('login'); 
+Route::post('/admin',[Admincontroller::class,'login'])->name('login'); 
+
+//Route::get('admin/dashboard',[Admincontroller::class,'dashboard'])->name('dashboard');
+
+
+
+Route::prefix('/admin')->namespace('App\Http\Controllers\admin')->group(function(){
+
+Route::get('/admin',[Admincontroller::class,'login'])->name('login');  
+Route::get('logout',[Admincontroller::class,'logout'])->name('logout');   
+
+Route::group(['middleware' => ['admin']],function(){
+
+    Route::get('dashboard',[Admincontroller::class,'dashboard'])->name('dashboard');
+    Route::get('addamenities',[Admincontroller::class,'addamenities'])->name('addamenities');
+    Route::post('addamenities',[Admincontroller::class,'addamenities'])->name('addamenities');
+    Route::get('viewaminities',[Admincontroller::class,'viewaminities'])->name('viewaminities');
+    Route::get('editaminities/{id}',[Admincontroller::class,'editaminities']);
+    Route::post('editaminities/{id}',[Admincontroller::class,'editaminities']);
+    Route::get('deleteaminities/{id}',[Admincontroller::class,'deleteaminities']);
+
+    Route::get('addroom',[Admincontroller::class,'addroom']);
+    Route::post('addroom',[Admincontroller::class,'addroom']);
+    Route::get('viewroom',[Admincontroller::class,'viewroom']);
+    Route::get('deleteroom/{id}',[Admincontroller::class,'deleteroom']);
+
+    Route::get('addbannertext',[Admincontroller::class,'addbannertext']);
+    Route::match(['get','post'],'editbannertext/{id}',[Admincontroller::class,'editbannertext']);
+    Route::match(['get','post'],'viewabout',[Admincontroller::class,'viewabout']);
+
+    Route::match(['get','post'],'editabout/{id}',[Admincontroller::class,'editabout']);
+    Route::match(['get','post'],'viewwhychooseus',[Admincontroller::class,'viewwhychooseus']);
+    Route::match(['get','post'],'editwhychooseus/{id}',[Admincontroller::class,'editwhychooseus']);
+
+
+
+});
+
+
+});
+
+
+10.make a seeder to insert data into table(admin)
+
+  php artisan make:seeder Admintableseeder
+
+  <?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use App\Models\Admin;
+use Hash;
+
+class AdminTablesdder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        //
+    $pasword=Hash::make('123456789');
+    $adminrecords=[
+           ['name'=>'ranjit','type'=>'admin','mobile'=>'8245128570','email'=>'ranjit@gmail.com','password'=>$pasword,'status'=>1,'image'=>' ']
+
+    ];
+
+      Admin::insert($adminrecords);
+      
+
+    }
+}
+
+
+
+11 . go to databaseseeder.php  file and add code      
+
+   <?php
+
+      namespace Database\Seeders;
+
+       // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+      use Illuminate\Database\Seeder;
+
+      class DatabaseSeeder extends Seeder
+      {
+    /**
+     * Seed the application's database.
+     */
+    public function run(): void
+    {
+        // \App\Models\User::factory(10)->create();
+
+        // \App\Models\User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
+        //$this->call(AdminTablesdder::class);
+        $this->call(Bannertable::class);
+
+       }
+     }
+
+12. run the command 
+  
+   php artisan db:seed
+
+13. change  Admin model file acording to user model  file  
+
+    <?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+
+class Admin extends Authenticatable
+
+{
+    use HasFactory;
+
+    protected $guard = 'admin';
+
+
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+        
+    ];
+
+
+}
+
+
+
+//// how to get admin profile details 
+
+$email=Auth::guard('admin')->user()->email;
+$type=Auth::guard('admin')->user()->usertype
+Auth::guard('admin')->logout(); 
+
+
+
+
+               
