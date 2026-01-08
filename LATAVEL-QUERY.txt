@@ -1,0 +1,160 @@
+public function destroy($id)
+{
+  $img=DB::table('student')->where('id',$id)->first();
+  $image_path=$img->photo;
+  
+  unlink($image_path); 
+  DB::table('student')->where('id',$id)->delete();
+  
+return response('deleted');
+
+}
+
+
+$PRODUCT=Product::where('id',$data['product'])->update(['status'=>$status]);
+
+return category from product  
+
+$category=Product::with('category')->get()->toArray();
+dd($category);
+
+///  no  of rows  
+
+$nosku=productattribute::where('sku',$value)->count();
+
+///// get last insert id ////
+
+$id=DB::getpdo()->lastInsertId();
+
+////
+$homesliderbanner=Banner::where('type','slider')->where('status',1)->orderBy('sort','ASC')->get()->toArray();
+
+///
+$latestproduct=Product::where('status',1)->orderBy('id','Desc')->limit(4)->get()->toArray();
+
+/////
+$bestseller=Product::with(['brand','image'])->where(['best_seller'=>'yes','status'=>1])->inRandomOrder()->limit(4)->get()->toArray();
+///
+$discountedproduct=Product::with(['brand','image'])->where('product_discounted','>',0)->where('status',1)->inRandomOrder()->limit(4)->get()->toArray();
+
+/////
+
+$categoryproduct=Product::with(['brand','image'])->whereIn('category_id',$categoryDetails['catIds'])->where('status',1)->orderBy('id','Desc')->get()->toArray()                                       
+
+rerurn view('front.products.listing')->with(compact('categoryDetails','categoryProducts'));
+
+///product details page by product id 
+
+$productdtls=Product::with(['category','brand','attributes','images'])->find($id)->toArray();
+
+/// delete by id 
+
+$category=Category::find($id);
+$category->delete();
+
+DB::table('categories')->where('id',$id)->delete();
+
+
+
+//// return  category and subcategory  
+
+$data=DB::table('subcategories')->leftJoin('categories','subcategories.category_id','subcategory.id')
+            ->select('subcategry.*','category.category_name')->get();
+
+//// insert data by query builder
+
+$data=array();
+$data['categoryname']=$request->name;
+$data['categoryslug']=Str::slug($request->name,'-');
+DB::table('category')->insert($data);
+
+////
+
+
+public function store(Request $request)
+{
+ $cat=DB::table('subcategories')->where('id',$request->subcategory_id)->first();
+
+  $data=array();
+  $data['category_id']=$cat->category_id;
+  $data['subcategory_id']=$request->subcategory_id;
+  $data['category_slug']=Str::slug($request->childcategory_name,'-');
+  $data['category_name']=$request->childcategory_name;
+  DB::table('childcategory')->insert($data);
+}
+
+///  update by query builder  
+
+DB::table('childcategory')->where('id',$id)->update($data);
+
+///latest  
+
+$data=DB::table('coupon')->latest()->get();
+
+//// get data product table with all relation table /////
+
+$query=DB::table('product')->leftJoin('categories','product.category_id','categories.id')
+       ->leftJoin('subcategories','product.subcategory_id','subcategory.id')
+       ->leftJoin('brands','product.brand_id','brand.id') 
+
+if($request->category_id)
+{
+  $query->where('product.category_id',$request->category_id);
+}
+
+if($request->brand_id)
+{
+  $query->where('product.brand_id',$request->brand_id);
+}
+
+if($request->status==1)
+{
+  $query->where('product.status',1);
+}
+
+if($request->status==0)
+{
+  $query->where('product.status',0);
+}
+
+$product=$query->select('product.*','category.category_name','subcategory.subcategory_name','brand.brand_name')->get();
+
+/////
+
+$bannerproduct=Product::where('product_slider',1)->latest()->first();
+
+
+//// for feature product on index page ///
+
+$featureproduct=Product::where('featured',1)->orderBy('id','DESC')->limit(10)->get();
+
+//// get categy id  ///
+
+$category_id=DB::table('category')->where('id',$request->id)->first()->id;
+
+/////  skip in  query  ///
+
+$amarpay=DB::table('payment_gateway_db')->first();
+$surajpay=DB::table('payment_gateway_db')->skip(1)->first();
+$ssl=DB::table('payment_gateway_db')->skip(2)->first();
+
+///// insert record and get last insert  id 
+$order['customername']=$request->name;
+$order['email']=$request->email;
+
+$order_id=DB::table('order')->insertGetId($order);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
