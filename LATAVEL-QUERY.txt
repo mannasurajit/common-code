@@ -144,6 +144,114 @@ $order['email']=$request->email;
 
 $order_id=DB::table('order')->insertGetId($order);
 
+//// case caded delete ////
+
+$table->id();
+$table->unsignedBigInteger('user_id');
+$table->string('product_name');  
+$table->integer('questity'); 
+$table->decimal('price');
+$table->timestamps();
+///foregion key constraint
+$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+ 
+
+/// for search quesry
+$query=DB::table('shop')->orderBY('id');     
+if($search=$request->search)
+{  
+  $query->where('shop_name','like','%$search%');
+}
+
+
+///  count no  of record  
+$noofpost=DB::table('post')->count(); 
+
+/////  
+migration add column to a table and soft delete 
+
+php artisan make:migration add_columnname_to_tablename --table=tablename 
+ example   add_deleted_at_to_customers_table --table=customers
+  
+after  that writ the code in  migration file
+
+$table->softDeletes(); 
+
+//// pagination ///
+
+1. use cursor pagination
+2. must put id as orderby('id', 'desc'); 
+3. 
+check function below
+public function index(Request $request)
+{
+  $shopcount=DB::table('shops')->count();
+  ///read data from table 
+ $query=DB::table('shop')->orderBy('id');
+ if($search=$request->search){
+  $query->where(function($q) use ($search){
+         $q=where('shop_name','like','%'.$search.'%')
+            ->orwhere('shop_number','like','%'.$search.'%')
+            ->orwhere('shop_email','like','%'.$search.'%')
+            ->orwhere('tin_number','like','%'.$search.'%');
+   });
+ }
+
+$shoplists=$query->cursorPaginate(12)->appends(['search'=>$request->search]);
+return view('shop.index',compact('shoplists','shopcount'));
+
+
+}
+
+in view write code 
+total shop list count  {{ $shopcount }}
+search form in index page where list are showing in same page 
+<form action="{{ route('shop.index') }}" method="get">
+<input type="text" name="search" value="{{ request('search') }}" >
+<input type="submit" value="search">
+</form> 
+
+@forelse($shoplists as $shop)
+{
+
+}
+@empty
+<tr><td>No record found</td></tr>
+@endforelse
+
+after complete table put link 
+{{ $shoplists->links()  }}
+
+< end pagination >
+
+//// My custom search  ///
+
+  public function listing(Request $request)
+  {
+     //$products=Product::with('brand','category')->get();
+     //dd($product);
+     if($request->isMethod('post'))
+      {
+       $products=Product::with('brand','category')
+                  ->where('category_id',$request->category)
+                  ->where('brand_id',$request->brand)
+                  ->get();
+
+                 // dd($products);
+
+        //return  redirect('/listing')->with(compact('products'));
+      }
+      else
+      {
+        $products=Product::with('brand','category')->get();
+
+      }  
+
+     return view('/listing')->with(compact('products'));
+
+  }   
+
+
 
 
 
