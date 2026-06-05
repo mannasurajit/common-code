@@ -1,0 +1,55 @@
+1. make a table like Brands
+
+2. Make a model Brand .
+
+   use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+   class Brand extends Model
+   {
+    use HasFactory;
+
+3.make seeder php artisan make:seeder Brandseeder
+
+    public function run(): void
+    {     
+      \App\Models\Brand::factory(10)->create();
+    }
+
+
+4. make a factori Brand remember Factory name must br modelname+Factory , so only need
+  write write Model name only during model creation 
+  php artisan make:factoy Brand 
+
+  use Illuminate\Support\Str;
+  use Illuminate\Database\Eloquent\Factories\Factory;
+  
+    public function definition(): array
+    {
+        return [
+             'title'=>fake()->name(),
+             
+        ];
+    }
+
+
+5. make change in databse seeder  
+
+    {
+        // \App\Models\User::factory(10)->create();
+
+        // \App\Models\User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
+         $this->call([
+              Brandseeder::class,
+
+         ]);
+      }
+
+To  run seeder  
+
+ php artisan db:seed  or php artisan db:seed --class=Brandseeder
+
+
+
