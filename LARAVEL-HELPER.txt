@@ -1,0 +1,48 @@
+1. create a helper file example add.php  by creating a folder "Helper" under App
+    App/Helper/add.php
+
+    if(!function_exists('add'))
+   {
+
+   function add($a,$b)
+   {
+    $c=$a+$b;
+    return $c;
+   }
+   }   
+
+
+2.  put this helper file in composer.json
+
+   "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        },
+
+      "files":[
+
+        "App/Helper/add.php"
+              ]
+
+    }, 
+
+ 3. write command and run  
+     
+    composer dump-autoload
+
+4.  call the function  from anywhere  
+
+    Route::get('/checkhelper',function(){
+     return add(5,9);
+
+    }); 
+
+     
+
+
+
+
+
+
