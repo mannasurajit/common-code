@@ -252,8 +252,13 @@ after complete table put link
   }   
 
 
+$users=DB::table('orders')    
+         ->select('username',DB::raw('SUM(price) as total'))   
+         ->groupBy('username')
+         ->get();
 
 
+    return $users;
 
 
 
